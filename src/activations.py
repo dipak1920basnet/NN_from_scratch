@@ -11,7 +11,7 @@ def activation():
 
 def compute_Z(W,X,b):
     if X.shape[1] == W.shape[1]:
-        return np.matmul(W.transpose(),X) + b
+        return np.matmul(X,W.transpose()) + b.reshape(-1,1)
     raise ValueError(
         f"Shape mismatch: W {W.shape}, X {X.shape}")
 
