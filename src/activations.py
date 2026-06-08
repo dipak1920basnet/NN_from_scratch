@@ -3,7 +3,7 @@ import numpy as np
 def activation():
     activation_list = {
         "Linear":Linear,
-        "ReLU":ReLU,
+        "Relu":ReLU,
         "Sigmoid":Sigmoid,
         "Tanh":Tanh
     }
@@ -11,9 +11,9 @@ def activation():
 
 def compute_Z(W,X,b):
     if X.shape[1] == W.shape[1]:
-        return np.matmul(X,W.transpose()) + b.reshape(-1,1)
+        return np.matmul(X,W.transpose()) + b.reshape(1,-1)
     raise ValueError(
-        f"Shape mismatch: W {W.shape}, X {X.shape}")
+        f"Shape mismatch: X {X.shape}, W {W.shape}")
 
 def Linear(Z):
     return Z

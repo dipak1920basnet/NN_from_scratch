@@ -3,11 +3,15 @@ from activations import activation, compute_Z
 from neuron import Dense
 activation_list = activation()
 
-X = np.matrix([
+X = np.array([
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
     [10,11,12]
+])
+
+Y = np.array([
+    1,2,3,4
 ])
 
 class Sequential():
@@ -20,7 +24,7 @@ class Sequential():
         self.track_dW = [None] * len(self.track_W)
         self.track_dB = [None] * len(self.track_B)
         self.track_dZ = [None] * len(self.track_Z)
-        self.track_dA = [None] * len(self.track_A)
+        # self.track_dA = [None] * len(self.track_A)
 
     def forward_pass(self, X):
         self.track_A.append(X)
@@ -40,8 +44,18 @@ class Sequential():
             self.track_Z.append(Z)
             self.track_A.append(A)
 
-    def back_prop(self):
-        pass
+    def back_prop(self,Y):
+        last_layer_dZ = self.track_A[-1]- Y.reshape(-1,1)
+        m = len(self.track_A[0])
+        last_layer_dw = ((last_layer_dZ)*self.track_A[-2].transpose())/m
+        last_layer_db =  np.sum(last_layer_dZ, axis=1, keepdims=True)/m
+        self.track_dZ[-1] = last_layer_dZ
+        self.track_dW[-1] = last_layer_dw
+        self.track_dB[-1] = last_layer_db
+        dZ = self.track_dZ[-1]
+        dW = self.track_dW[-1]
+        dB = self.track_dB[-1]
+        return 
     
     def gradient_descent(self):
         pass
@@ -62,4 +76,6 @@ model = Sequential([
 print(model.NN)
 
 
-model.fit(X)
+model.fit(X,Y)
+print(model.track_A[-1])
+print(model.back_prop(Y))
