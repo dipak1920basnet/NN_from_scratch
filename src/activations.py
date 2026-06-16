@@ -5,7 +5,8 @@ def activation():
         "Linear":Linear,
         "Relu":ReLU,
         "Sigmoid":Sigmoid,
-        "Tanh":Tanh
+        "Tanh":Tanh,
+        "Leakyrelu":LeakyReLU
     }
     return activation_list
 
@@ -32,6 +33,10 @@ def Tanh(Z):
 
     # g_Z = (Z1 - Z2) / (Z1 + Z2)
     g_Z = np.tanh(Z)
+    return g_Z
+
+def LeakyReLU(Z):
+    g_Z = np.maximum(0.01*Z,Z)
     return g_Z
 
 if __name__ == "__main__":
