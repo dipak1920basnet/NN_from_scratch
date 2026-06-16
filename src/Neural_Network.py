@@ -1,7 +1,10 @@
 import numpy as np 
 from activations import activation, compute_Z
 from neuron import Dense
+from derivate_activation import function_derivate
+
 activation_list = activation()
+calc_func_derivate = function_derivate()
 
 X = np.array([
     [1, 2, 3],
@@ -62,6 +65,8 @@ class Sequential():
 
     def fit(self,X, epochs= 1):
         self.forward_pass(X)
+        for i in epochs:
+            self.gradient_descent
 
 
             

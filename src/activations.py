@@ -39,5 +39,8 @@ def LeakyReLU(Z):
     g_Z = np.maximum(0.01*Z,Z)
     return g_Z
 
+def softmax(Z):
+    pass
+
 if __name__ == "__main__":
     activation()

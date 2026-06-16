@@ -33,6 +33,8 @@ def d_leaky_relu(Z):
     # return  0.01 if Z < 0 else 1
     return np.where(Z>=0,1.0,0.01)
 
+def d_softmax(Z):
+    pass
 
 if __name__ == "__main__":
     function_derivate()
