@@ -113,12 +113,13 @@ class Sequential():
 
 
 
-    def gradient_descent(self):
+    def gradient_descent(self, lr=0.01):
         # Update W and B
-        self.track_W -= self.track_dW
-        self.track_B -= self.track_dB 
+        for l in range(len(self.NN)):
+            self.track_W[l] -= lr * self.track_dW[l]
+            self.track_B[l] -= lr * self.track_dB[l]
 
-    def fit(self,X,Y, epochs= 1):
+    def fit(self,X,Y,lr, epochs= 1):
         
         for i in range(epochs):
             if i == 0:
@@ -127,7 +128,7 @@ class Sequential():
             else:
                 self.forward_prop()
             self.back_prop(Y)
-            self.gradient_descent()
+            self.gradient_descent(lr)
             
 
 
@@ -144,7 +145,7 @@ model = Sequential([
 
 model.forward_pass(X)
 # print(model.track_W[0])
-model.fit(X,Y, epochs=3)
+model.fit(X,Y,lr=0.01, epochs=3)
 # print(model.track_A[-1])
 # model.back_prop(Y)
 # print()
