@@ -17,7 +17,7 @@ X = np.array([
 ])
 
 Y = np.array([
-    1,2,3,4
+    [1],[2],[3],[4]
 ])
 
 class Sequential():
@@ -31,14 +31,13 @@ class Sequential():
         self.track_dW = [None] * total_layer
         self.track_dB = [None] * total_layer
         self.track_dZ = [None] * total_layer
-        # self.track_dA = [None] * len(self.track_A)
 
     def forward_pass(self, X):
         self.track_A.append(X)
-        for i in  range(len(self.NN)):
+        for l in  range(len(self.NN)):
             X = self.track_A[-1]
             # print(f"layer_{i}: {X.shape}")
-            unit , activations = self.NN[i]
+            unit , activations = self.NN[l]
 
             w = np.random.rand(unit, X.shape[1])
             b = np.random.rand(unit)
@@ -53,7 +52,6 @@ class Sequential():
 
     def back_prop(self,Y):
         m = self.track_A[0].shape[0]
-        self.track_A = self.track_A[1:]
         def last_layer():
             # get the name of activation function 
             activation_function_name = self.NN[-1][1]
@@ -76,46 +74,61 @@ class Sequential():
         self.track_dW[-1] = dW
         self.track_dB[-1] = dB
 
-        for i in range(len(self.NN)-2,0,-1): 
+        for l in range(len(self.NN)-2,-1,-1): 
             """
             i starts with second last layer
             """
-            print(i)
-            dZ_L_1 = self.track_dZ[i+1]
+            # print(f"For layer_{l+1}")
+            dZ_L_1 = self.track_dZ[l+1]
             # print(dZ_L_1)
-            w = np.transpose(self.track_W[i+1])
+            # w = np.transpose(self.track_W[l+1])
+
+            w = self.track_W[l+1]
             # get the name of activation function 
-            activation_function_name = self.NN[i][1]
-            derivate_g_Z = calc_func_derivate[activation_function_name](self.track_Z[i])
+            activation_function_name = self.NN[l][1]
+            derivate_g_Z = calc_func_derivate[activation_function_name](self.track_Z[l])
             dZ = derivate_Z(W=w,dZ=dZ_L_1, dg_Z=derivate_g_Z)
 
-            A = np.transpose(self.track_A[i+1])
+            # A = np.transpose(self.track_A[l])
+            A = self.track_A[l]
             dW = derivate_W(dZl=dZ,A=A,m=m)
             dB = derivate_b(dZl=dZ,m=m)
             
-            self.track_dZ[i] = dZ
-            self.track_dW[i] = dW
-            self.track_dB[i] = dB
+            self.track_dZ[l] = dZ
+            self.track_dW[l] = dW
+            self.track_dB[l] = dB
 
-        # last_layer_dZ = self.track_A[-1]- Y.reshape(-1,1)
-        # m = len(self.track_A[0])
-        # last_layer_dw = ((last_layer_dZ)*self.track_A[-2].transpose())/m
-        # last_layer_db =  np.sum(last_layer_dZ, axis=1, keepdims=True)/m
-        # self.track_dZ[-1] = last_layer_dZ
-        # self.track_dW[-1] = last_layer_dw
-        # self.track_dB[-1] = last_layer_db
-        # dZ = self.track_dZ[-1]
-        # dW = self.track_dW[-1]
-        # dB = self.track_dB[-1]
-        # return 
-    
+
+    def forward_prop(self):
+        for l in range(len(self.NN)):
+            X = self.track_A[l]
+            W = self.track_W[l]
+            b = self.track_B[l]
+
+            Z = compute_Z(W,X,b)
+
+            unit , activations = self.NN[l]
+            A = activation_list[activations](Z)
+            self.track_A[l+1] = A
+
+
+
     def gradient_descent(self):
-        pass
+        # Update W and B
+        self.track_W -= self.track_dW
+        self.track_B -= self.track_dB 
 
-    def fit(self,X, epochs= 1):
-        self.forward_pass(X)
-        for i in epochs:
-            self.gradient_descent
+    def fit(self,X,Y, epochs= 1):
+        
+        for i in range(epochs):
+            if i == 0:
+                # execute forward pass to initialize w and b 
+                self.forward_pass(X)
+            else:
+                self.forward_prop()
+            self.back_prop(Y)
+            self.gradient_descent()
+            
 
 
             
@@ -129,27 +142,28 @@ model = Sequential([
 
 # print(model.NN)
 
-
-model.fit(X,Y)
+model.forward_pass(X)
+# print(model.track_W[0])
+model.fit(X,Y, epochs=3)
 # print(model.track_A[-1])
-model.back_prop(Y)
+# model.back_prop(Y)
 # print()
 # print()
 # print()
 
 
-# print(model.track_dW)
+# print(model.track_dW[0])
 # print()
 # print()
 # print()
 
-# print(model.track_dB)
+# # print(model.track_dB)
 
 # print()
 # print()
 # print()
 
-# # print(model.track_dZ)
+# print(model.track_dZ)
 
 # print(len(model.track_A))
 # print(len(model.track_Z))
