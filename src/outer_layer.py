@@ -14,7 +14,7 @@ def Outer_layer():
     return dZ_last
 
 def Sigmoid(A,Y):
-    return A-Y
+    return A-Y.reshape(-1,1)
 
 def Tanh(A,Y):
     return Sigmoid(A,Y)*(1-np.square(A))
