@@ -16,9 +16,9 @@ def derivate_W(dZl,A,m):
     """
     dW = (1/m)*dZl*AT
     """
-    dZl = dZl.reshape(-1,1)
-    A = A.reshape(-1,1)
-    return (dZl*np.transpose(A))/m
+    # dZl = dZl.reshape(-1,1)
+    # A = A.reshape(-1,1)
+    return (dZl.T @ A) / m
 
 def derivate_b(dZl,m):
     """

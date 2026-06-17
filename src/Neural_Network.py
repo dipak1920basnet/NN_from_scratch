@@ -92,6 +92,15 @@ class Sequential():
             # A = np.transpose(self.track_A[l])
             A = self.track_A[l]
             dW = derivate_W(dZl=dZ,A=A,m=m)
+
+
+
+            # adding debug prints 
+            print("Layer", l+1)
+            print("W shape :", self.track_W[l].shape)
+            print("dW shape:", dW.shape)
+            print()
+
             dB = derivate_b(dZl=dZ,m=m)
             
             self.track_dZ[l] = dZ
@@ -120,16 +129,12 @@ class Sequential():
             self.track_B[l] -= lr * self.track_dB[l]
 
     def fit(self,X,Y,lr, epochs= 1):
-        
+        # execute forward pass to initialize w and b 
+        self.forward_pass(X)
         for i in range(epochs):
-            if i == 0:
-                # execute forward pass to initialize w and b 
-                self.forward_pass(X)
-            else:
-                self.forward_prop()
             self.back_prop(Y)
             self.gradient_descent(lr)
-            
+            self.forward_prop()
 
 
             
